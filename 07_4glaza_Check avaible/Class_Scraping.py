@@ -1,4 +1,4 @@
-import time, random, re
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -28,7 +28,7 @@ class Product:
                 return False
             except Exception as e:
                 print(f"Something went wrong, {e}. Repeat {i}")
-                time.sleep(i*5)          
+                time.sleep(i*15)          
         return False
  
 
