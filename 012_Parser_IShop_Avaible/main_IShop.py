@@ -8,12 +8,12 @@ from sqlalchemy.orm import declarative_base, Session
 from Class_Scraping import Product
 from Class_API_Yandex import API_Requests
 
-engine = create_engine('sqlite:///DB_4glaza.db', future=True)
+engine = create_engine('sqlite:///DB_IShop.db', future=True)
 Base = declarative_base()
 
 
 class Groups_Ads(Base):
-    __tablename__ = "DB_4glaza"
+    __tablename__ = "DB_IShop"
     id = Column(Integer, unique=True, primary_key=True)
     product_id = Column(Integer, unique=True, nullable=False)
     clear_url = Column(String, unique=True, nullable=False)
@@ -37,25 +37,9 @@ def Check_avaible():
         i += 1
         available = Product(row.clear_url).getAvaible()
         if available:
-            if re.search(r"К сожалению", available) or re.search(r"Товар поступит", available):
-                if row.available == 'Идут показы.':
-                    request = API_Requests(row.ads_Id)
-                    response = request.Stop_ads()
-                    if response[0]:
-                        save_to_Databse(session, 'Остановлено.', row)
-                        c += 1
-                        print(f"Checking {i}-rows. Ads {row.product_id} was stopped. count of changes: {c}") 
-                    else:
-                        e += 1
-                        print(f"Checking {i}-rows. Error stoping ads: {response[1]}. Error count: {e}")    
-                    
-                else:
-                    save_to_Databse(session, row.available, row)
-                    # print(f"Checking {i}-rows. Ads {row.product_id} Doesn't changed") 
-            else:
+            if re.search(r"Склад:", available):
                 if row.available == 'Идут показы.':
                     save_to_Databse(session, row.available, row)
-                    # print(f"Checking {i}-rows. Ads {row.product_id} Doesn't changed") 
                 else:
                     request = API_Requests(row.ads_Id)
                     response = request.Start_ads()
@@ -66,6 +50,19 @@ def Check_avaible():
                     else:
                         e += 1
                         print(f"Checking {i}-rows. Error starting ads: {response[1]}. Error count: {e}")
+            else:
+                if row.available == 'Идут показы.':
+                    request = API_Requests(row.ads_Id)
+                    response = request.Stop_ads()
+                    if response[0]:
+                        save_to_Databse(session, 'Остановлено.', row)
+                        c += 1
+                        print(f"Checking {i}-rows. Ads {row.product_id} was stopped. count of changes: {c}") 
+                    else:
+                        e += 1
+                        print(f"Checking {i}-rows. Error stoping ads: {response[1]}. Error count: {e}")
+                else:
+                    save_to_Databse(session, row.available, row)
         else:
             e += 1
             print(f"Checking {i}-rows. Ads {row.product_id} Error scraping. Error count: {e}")
