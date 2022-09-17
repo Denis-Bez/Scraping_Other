@@ -9,7 +9,7 @@ HEADERS = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36
 # Object is certain product in catalog
 class Product:
 
-    def __init__(self, url_product):  
+    def __init__(self, url_product):
         self.clear_url = url_product
         self.items = self.getSoup()
     

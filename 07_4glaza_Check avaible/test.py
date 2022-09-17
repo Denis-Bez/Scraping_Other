@@ -3,9 +3,9 @@ import csv, re
 from Class_Scraping import Product
 
 
-a = ['1er1443896462', '1144er3896463', '11re443896464']
-b = API_Requests(a)
-print(b.GetStatus_Ads())
+a = '55200.00'
+
+print(float(a))
 
 
 

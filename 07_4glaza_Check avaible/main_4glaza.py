@@ -8,6 +8,8 @@ from sqlalchemy.orm import declarative_base, Session
 from Class_Scraping import Product
 from Class_API_Yandex import API_Requests
 
+from Dictionary_UrlCorrection import cleaning_url
+
 engine = create_engine('sqlite:///DB_4glaza.db', future=True)
 Base = declarative_base()
 
@@ -51,11 +53,9 @@ def Check_avaible():
                     
                 else:
                     save_to_Databse(session, row.available, row)
-                    # print(f"Checking {i}-rows. Ads {row.product_id} Doesn't changed") 
             else:
                 if row.available == 'Идут показы.':
                     save_to_Databse(session, row.available, row)
-                    # print(f"Checking {i}-rows. Ads {row.product_id} Doesn't changed") 
                 else:
                     request = API_Requests(row.ads_Id)
                     response = request.Start_ads()
@@ -72,7 +72,62 @@ def Check_avaible():
     
     print(f"Sum of the checks: {i}, Sum of the chnges: {c}, Sum of the errors: {e}")
 
-                
+
+# Getting file with new products (id, name, url, vendor, cleanurl)
+# Input file: 'new_catalog.csv', Output file: 'new_products.csv'
+def Feed_filter():
+    i = 0 # New product counter
+    e = 0 # Error counter
+    avail = 0 # Noе available counter
+    with open('new_products.csv', 'a', encoding='utf-8', newline='') as file:
+        writer = csv.writer(file, delimiter=';')
+        writer.writerow(['id', 'name', 'url', 'vendor', 'clean_url'])
+        with open('new_catalog.csv', encoding='utf-8', newline='') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter=';')
+            session = Session(engine)
+            for row in reader:
+                # Cheking price >= 10000
+                if float(row['price']) >= 10000:
+                    db_id = session.query(Groups_Ads).filter(Groups_Ads.product_id == int(row['id'])).first()
+                    # Checking if database already has product
+                    if not db_id:
+                        # Checking new product's available (table)
+                        if row['available'] == 'true':
+                            clean_url = getClean_url(row['url'])
+                            if clean_url:
+                                available = Product(clean_url).getAvaible()
+                                # Checking new product's available (scraping)
+                                if not re.search(r"К сожалению", available) or re.search(r"Товар поступит", available):
+                                    i += 1
+                                    writer.writerow([row['id'], row['name'], row['url'], row['vendor'], clean_url])
+                                    print(f'Was found New product! id: {row["id"]}. In total: {i}')
+                                elif not available:
+                                    e += 1
+                                    print(f'Error scrapping available! Sum of errors: {e}')
+                                else:
+                                    avail += 1
+                                    print(f"Product {row['id']} don't available. Counter:{avail}")
+                            else:
+                                e += 1
+                                print(f'Error cleaning URL! Sum of errors: {e}')
+            print(f'Finish! Sum of new products: {i}. Sum of errors: {e}. Sum not available: {avail}')
+
+
+def filling_base():
+    pass
+
+
+# Is being cleared url from partner's id
+def getClean_url(url):
+    try:
+        cleanurl = re.findall(r"&ulp=(.+)(?=%3F)", url)[0]
+    except:
+        return False
+    # Replacement reserved url-symbols
+    for symbol in cleaning_url:
+        cleanurl = re.sub(symbol, cleaning_url[symbol], cleanurl)
+    return cleanurl
+
 
 def save_to_Databse(session, status, row):
     row.available=status
@@ -82,9 +137,9 @@ def save_to_Databse(session, status, row):
 
 # --- START ---
 if __name__ == "__main__":
-    print('\n1.Checking available\n2.Filter feed (in development)\n')
+    print('\n1.Checking available\n2.Filter new products\n')
     type_algorithm = input('Input script number that you want to do:')
     if type_algorithm == '1':
         Check_avaible()
     elif type_algorithm == '2':
-        print("TODO: Creating csv-file of products that there aren't in database and filtering on price and available")
+        Feed_filter()

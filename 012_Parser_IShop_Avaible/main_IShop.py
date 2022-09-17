@@ -67,7 +67,7 @@ def Check_avaible():
             e += 1
             print(f"Checking {i}-rows. Ads {row.product_id} Error scraping. Error count: {e}")
     
-    print(f"Sum of the checks: {i}, Sum of the chnges: {c}, Sum of the errors: {e}")
+    print(f"Sum of the checks: {i}, Sum of the changes: {c}, Sum of the errors: {e}")
 
                 
 
