@@ -113,8 +113,23 @@ def Feed_filter():
             print(f'Finish! Sum of new products: {i}. Sum of errors: {e}. Sum not available: {avail}')
 
 
-def filling_base():
-    pass
+# Filling datavase new ads (input: new_ads.csv(id, clean_url))
+def Filling_base():
+    session = Session(engine)
+    i=0 # Data inputting counter
+    with open('new_ads.csv', encoding='utf-8', newline='') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')
+        for row in reader:
+            input = Groups_Ads(
+                product_id=row['id'], 
+                clear_url=row['clean_url'],
+                available='Идут показы.',
+                ads_Id=row['ads_id']
+            )
+            session.add_all([input])
+            i += 1
+        session.commit()
+        print(f'Inputting {i}-positions')
 
 
 # Is being cleared url from partner's id
@@ -137,9 +152,11 @@ def save_to_Databse(session, status, row):
 
 # --- START ---
 if __name__ == "__main__":
-    print('\n1.Checking available\n2.Filter new products\n')
+    print('\n1.Checking available\n2.Filter new products (input: new_catalog.csv)\n3.Filling database (input: new_ads.csv)')
     type_algorithm = input('Input script number that you want to do:')
     if type_algorithm == '1':
         Check_avaible()
     elif type_algorithm == '2':
         Feed_filter()
+    elif type_algorithm == '3':
+        Filling_base()
