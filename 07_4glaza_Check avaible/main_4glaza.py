@@ -70,7 +70,7 @@ def Check_avaible():
             e += 1
             print(f"Checking {i}-rows. Ads {row.product_id} Error scraping. Error count: {e}")
     
-    print(f"Sum of the checks: {i}, Sum of the chnges: {c}, Sum of the errors: {e}")
+    print(f"Sum of the checks: {i}, Sum of the changes: {c}, Sum of the errors: {e}")
 
 
 # Getting file with new products (id, name, url, vendor, cleanurl)
@@ -125,7 +125,7 @@ def Filling_base():
                 clear_url=row['clean_url'],
                 available='Идут показы.',
                 ads_Id=row['ads_id']
-            )
+                )
             session.add_all([input])
             i += 1
         session.commit()
