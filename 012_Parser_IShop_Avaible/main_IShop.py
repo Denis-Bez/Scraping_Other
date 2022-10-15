@@ -77,6 +77,9 @@ def save_to_Databse(session, status, row):
     row.update_date=datetime.utcnow()
     session.commit()
 
+def Test():
+    return 'Hi!'
+
 
 # --- START ---
 if __name__ == "__main__":

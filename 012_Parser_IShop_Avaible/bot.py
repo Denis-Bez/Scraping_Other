@@ -1,7 +1,6 @@
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters, Application
-from telegram.ext import messagequeue as mq
 from config import CONFIG
 
 import sys
