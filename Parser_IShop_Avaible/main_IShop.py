@@ -5,8 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DATETIME
 from sqlalchemy.orm import declarative_base, Session
 
-from Class_Scraping import Product
-from Class_API_Yandex import API_Requests
+from .Class_Scraping import Product
+from .Class_API_Yandex import API_Requests
 
 engine = create_engine('sqlite:///DB_IShop.db', future=True)
 Base = declarative_base()
@@ -76,9 +76,6 @@ def save_to_Databse(session, status, row):
     row.available=status
     row.update_date=datetime.utcnow()
     session.commit()
-
-def Test():
-    return 'Hi!'
 
 
 # --- START ---

@@ -1,7 +1,5 @@
-
-import requests, json, re, time
-from config import CONFIG
-from datetime import date
+import requests, json, time
+from .config import CONFIG
 
 
 # --- Class for Yandex APIconnection and create ads ---
@@ -96,7 +94,7 @@ class API_Requests:
             "FieldNames": ["StatusClarification"]
         }   
         body = self.create_Body(method, params)
-        result = self.Send_Request(body, self.__serviceURL['Ads'])       
+        result = self.Send_Request(body, self.__serviceURL['Ads'])  
         try:
             result = result['result']['Ads'][0]['StatusClarification']
             return [True, result]

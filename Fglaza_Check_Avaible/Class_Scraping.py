@@ -17,7 +17,7 @@ class Product:
 # --- Getting page content ---
 
     # Getting 'html' and object 'soup' and checking link working and server response. Try 2 times open link
-    def getSoup(self):        
+    def getSoup(self):
         for i in range(1, 3):
             try:
                 html = requests.get(self.clear_url, headers=HEADERS)
@@ -38,7 +38,8 @@ class Product:
         if self.items:
             try:
                 avaible = (self.items.find_all('tr'))[1].getText(strip=True)
-            except Exception:
+            except Exception as e:
+                print(f"Something went wrong, {e}")
                 avaible = False
             return avaible
         else:

@@ -1,14 +1,16 @@
 import csv, re
+import os
+import pathlib
 from datetime import datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DATETIME
 from sqlalchemy.orm import declarative_base, Session
 
-from Class_Scraping import Product
-from Class_API_Yandex import API_Requests
+from .Class_Scraping import Product
+from .Class_API_Yandex import API_Requests
 
-from Dictionary_UrlCorrection import cleaning_url
+from .Dictionary_UrlCorrection import cleaning_url
 
 engine = create_engine('sqlite:///DB_4glaza.db', future=True)
 Base = declarative_base()
@@ -68,9 +70,10 @@ def Check_avaible():
                         print(f"Checking {i}-rows. Error starting ads: {response[1]}. Error count: {e}")
         else:
             e += 1
-            print(f"Checking {i}-rows. Ads {row.product_id} Error scraping. Error count: {e}")
+            print(f"Checking {i}-rows. Ads {row.product_id} Error scraping. Error count: {e}.")
     
     print(f"Sum of the checks: {i}, Sum of the changes: {c}, Sum of the errors: {e}")
+    return f"Sum of the checks: {i}, Sum of the changes: {c}, Sum of the errors: {e}"
 
 
 # Getting file with new products (id, name, url, vendor, cleanurl)
