@@ -26,7 +26,12 @@ class Groups_Ads(Base):
     update_date = Column(DATETIME, default=datetime(2022, 8, 8, 8, 50, 16, 59198))
 
     def __repr__(self):
-         return f"DB_4glaza(id={self.id!r}, available={self.available!r}, product_id={self.product_id!r})"
+        return f"DB_4glaza(id={self.id!r}, available={self.available!r}, product_id={self.product_id!r})"
+    
+    def Get_last_data_update():
+        with Session(engine) as  session:
+            last_data = session.query(Groups_Ads).order_by(Groups_Ads.update_date).first()
+        return last_data.update_date
 
 
 def Check_avaible():

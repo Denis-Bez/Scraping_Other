@@ -1,6 +1,6 @@
 .vscode/
 .vscode
-.venv_scraping
+.Scraping_Other
 __pycache__
 config.py
 config
