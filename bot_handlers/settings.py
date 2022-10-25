@@ -1,26 +1,32 @@
 from telegram import Update
 from telegram.ext import CommandHandler, TypeHandler, MessageHandler, filters, CallbackQueryHandler
-from telegram.ext import ApplicationBuilder
+from telegram.ext import ApplicationBuilder, Defaults
 
-from config import ACCESS_TOKEN
+from config import ACCESS_TOKEN, ALLOWED_ID
 from bot_handlers import handlers
 from bot_keyboards import keyboards
 
+import pytz
+import datetime
+
 
 # --- Build bot application ---
-application = ApplicationBuilder().token(ACCESS_TOKEN).build()
+defaults = Defaults(tzinfo=pytz.timezone('Asia/Yekaterinburg'))
+application = (
+    ApplicationBuilder()
+    .token(ACCESS_TOKEN)
+    .defaults(defaults)
+    .build()
+)
 
 # --- Type handlers ---
 application.add_handler(TypeHandler(Update, handlers.typehandler), -1)
 
 # --- Command handlers ---
 application.add_handler(CommandHandler('start', handlers.start))
-# application.add_handler(CommandHandler('sanmoll', handlers.sanmoll))
-# application.add_handler(CommandHandler('fglaza', handlers.fglaza))
-# application.add_handler(CommandHandler('ishop', handlers.ishop))
 
 # --- Message handlers  ---
-# application.add_handler(MessageHandler(filters.Text(keyboards.start_keyboard[0][0]), handlers.choose_company))
+
 
 # --- Query handlers  ---
 application.add_handler(CallbackQueryHandler(handlers.choose_company, pattern="^" + 'Choose company' + "$"))
@@ -33,5 +39,6 @@ application.add_handler(CallbackQueryHandler(handlers.autocheck, pattern="^" + '
 # --- Job Queue  ---
 def job_queue():
     job_queue = application.job_queue
-    job_queue.run_repeating(handlers.one, interval=60, first=10)
-    job_queue.run_repeating(handlers.two, interval=60, first=10)
+    job_queue.run_daily(handlers.sanmoll, datetime.time(8, 0, 0, 0), user_id=ALLOWED_ID[0])
+    job_queue.run_daily(handlers.fglaza, datetime.time(9, 0, 0, 0), user_id=ALLOWED_ID[0])
+    job_queue.run_daily(handlers.fglaza, datetime.time(10, 0, 0, 0), user_id=ALLOWED_ID[0])

@@ -24,6 +24,11 @@ class Groups_Ads(Base):
     def __repr__(self):
          return f"DB_4glaza(id={self.id!r}, available={self.available!r}, product_id={self.product_id!r})"
 
+    def Get_last_data_update():
+        with Session(engine) as  session:
+            last_data = session.query(Groups_Ads).order_by(Groups_Ads.update_date).first()
+        return last_data.update_date
+
 
 def Check_avaible():
     i = 0   # Conter rows

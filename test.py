@@ -1,5 +1,5 @@
-start_keyboard = [
-    ["Ad's checking"]
-]
+import requests
 
-print(start_keyboard[0][0])
+req = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum')
+response = req.json()
+print(f"REsponse: {response[0]['current_price']}")
