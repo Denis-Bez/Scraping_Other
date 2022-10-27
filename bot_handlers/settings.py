@@ -31,14 +31,10 @@ application.add_handler(CommandHandler('start', handlers.start))
 # --- Query handlers  ---
 application.add_handler(CallbackQueryHandler(handlers.choose_company, pattern="^" + 'Choose company' + "$"))
 application.add_handler(CallbackQueryHandler(handlers.etherum, pattern="^" + 'etherum' + "$"))
-application.add_handler(CallbackQueryHandler(handlers.sanmoll, pattern="^" + 'Santehmoll' + "$"))
-application.add_handler(CallbackQueryHandler(handlers.fglaza, pattern="^" + '4glaza' + "$"))
-application.add_handler(CallbackQueryHandler(handlers.ishop, pattern="^" + 'IShop' + "$"))
+application.add_handler(CallbackQueryHandler(handlers.sanmoll_key, pattern="^" + 'Santehmoll' + "$"))
+application.add_handler(CallbackQueryHandler(handlers.fglaza_key, pattern="^" + '4glaza' + "$"))
+application.add_handler(CallbackQueryHandler(handlers.ishop_key, pattern="^" + 'IShop' + "$"))
 application.add_handler(CallbackQueryHandler(handlers.autocheck, pattern="^" + 'autocheck' + "$"))
 
 # --- Job Queue  ---
-def job_queue():
-    job_queue = application.job_queue
-    job_queue.run_daily(handlers.sanmoll, datetime.time(8, 0, 0, 0), user_id=ALLOWED_ID[0])
-    job_queue.run_daily(handlers.fglaza, datetime.time(9, 0, 0, 0), user_id=ALLOWED_ID[0])
-    job_queue.run_daily(handlers.fglaza, datetime.time(10, 0, 0, 0), user_id=ALLOWED_ID[0])
+job_queue = application.job_queue
