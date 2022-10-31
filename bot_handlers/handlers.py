@@ -85,8 +85,8 @@ async def autocheck(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
-    settings.job_queue.run_daily(ishop, datetime.time(9, 0, 0, 0), chat_id=update.effective_chat.id)
-    settings.job_queue.run_daily(fglaza, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
+    settings.job_queue.run_daily(ishop, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
+    settings.job_queue.run_daily(fglaza, datetime.time(11, 0, 0, 0), chat_id=update.effective_chat.id)
     context.user_data['autocheck'] = 'On'
     await query.edit_message_text(text='AutoChecking every day!')
 
