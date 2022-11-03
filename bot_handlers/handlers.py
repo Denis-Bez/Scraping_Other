@@ -8,13 +8,7 @@ import requests
 
 from Fglaza_Check_Avaible import main_4glaza
 from Parser_IShop_Avaible import main_IShop
-# Ubuntu
-sys.path.append('/home/user/Documents/git')
-sys.path.append('/home/user/Documents/git/PP005_Scraping_Santehmoll')
-# Windows
-# sys.path.append('C:\\Users\\v4174\\git')
-# sys.path.append('C:\\Users\\v4174\\git\\PP005_Scraping_Santehmoll')
-from PP005_Scraping_Santehmoll import main_Smoll
+from Santehmoll_Avaible import main_Smoll
 from config import ALLOWED_ID
 from bot_keyboards import keyboards
 from bot_handlers import settings
@@ -30,7 +24,7 @@ async def typehandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # --- Command Callback  ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Choose action:", reply_markup=keyboards.start_keyboard())
+    await update.message.reply_text("Choose action:", reply_markup=keyboards.start_keyboard(context.user_data.get('ads_number', 'Error')))
 
 
 async def sanmoll(context: ContextTypes.DEFAULT_TYPE):
@@ -65,6 +59,15 @@ async def ishop_key(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = main_IShop.Check_avaible()
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+async def santehmoll_new_ads(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(text='Start creating new ads!')
+    count = main_Smoll.creatingNewAds(context.user_data['ads_number'])
+    context.user_data['ads_number'] += 1000
+    await query.edit_message_text(text=f"{count} Ads was creating. Current number of ad: {context.user_data.get('ads_number', 'Error')}")
+
+
 async def etherum(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -84,11 +87,20 @@ async def choose_company(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def autocheck(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
-    settings.job_queue.run_daily(ishop, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
-    settings.job_queue.run_daily(fglaza, datetime.time(11, 0, 0, 0), chat_id=update.effective_chat.id)
-    context.user_data['autocheck'] = 'On'
-    await query.edit_message_text(text='AutoChecking every day!')
+    job_smoll = settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
+    job_ishop = settings.job_queue.run_daily(ishop, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
+    job_fglaza = settings.job_queue.run_daily(fglaza, datetime.time(11, 0, 0, 0), chat_id=update.effective_chat.id)
+    job_create = settings.job_queue.run_daily(santehmoll_new_ads, datetime.time(12, 0, 0, 0), chat_id=update.effective_chat.id)
+    if context.user_data['autocheck'] == 'On':
+        job_smoll.schedule_removal()
+        job_ishop.schedule_removal()
+        job_fglaza.schedule_removal()
+        job_create.schedule_removal()
+        context.user_data['autocheck'] = 'Off'
+        await query.edit_message_text(text='AutoChecking is OFF!')
+    else:
+        context.user_data['autocheck'] = 'On'
+        await query.edit_message_text(text='AutoChecking every day!')
 
 
 

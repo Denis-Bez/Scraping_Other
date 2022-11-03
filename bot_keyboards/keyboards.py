@@ -2,12 +2,17 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRe
 
 from Fglaza_Check_Avaible import main_4glaza
 from Parser_IShop_Avaible import main_IShop
-from PP005_Scraping_Santehmoll import main_Smoll
+from Santehmoll_Avaible import main_Smoll
 
 # --- Start Bot ---
-def start_keyboard():
+def start_keyboard(ad_count):
     keyboard = [
-        [InlineKeyboardButton("Ad's Scraping", callback_data='Choose company'), InlineKeyboardButton("Price of etherum", callback_data='etherum')]
+        [
+        InlineKeyboardButton("Ad's Scraping", callback_data='Choose company'), 
+        InlineKeyboardButton("Price of etherum", callback_data='etherum')
+        ],
+        [InlineKeyboardButton(f"Santeh_new_ads. Count: {ad_count}", callback_data='Santehmoll_new_ads')]
+        
     ]       
     return InlineKeyboardMarkup(keyboard)
 
