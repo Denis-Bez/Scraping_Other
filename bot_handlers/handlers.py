@@ -60,12 +60,10 @@ async def ishop_key(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 async def santehmoll_new_ads(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    await query.edit_message_text(text='Start creating new ads!')
+    await context.bot.send_message(chat_id=update.effective_chat.id, text='Start create new ads santehmoll')
     count = main_Smoll.creatingNewAds(context.user_data['ads_number'])
     context.user_data['ads_number'] += 1000
-    await query.edit_message_text(text=f"{count} Ads was creating. Current number of ad: {context.user_data.get('ads_number', 'Error')}")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{count} Ads was creating. Current number of ad: {context.user_data.get('ads_number', 'Error')}")
 
 
 async def etherum(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -90,12 +88,12 @@ async def autocheck(update: Update, context: ContextTypes.DEFAULT_TYPE):
     job_smoll = settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
     job_ishop = settings.job_queue.run_daily(ishop, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
     job_fglaza = settings.job_queue.run_daily(fglaza, datetime.time(11, 0, 0, 0), chat_id=update.effective_chat.id)
-    job_create = settings.job_queue.run_daily(santehmoll_new_ads, datetime.time(12, 0, 0, 0), chat_id=update.effective_chat.id)
+    # job_create = settings.job_queue.run_daily(santehmoll_new_ads, datetime.time(16, 46, 0, 0), count_ads=context.user_data['ads_number'], chat_id=update.effective_chat.id)
     if context.user_data['autocheck'] == 'On':
         job_smoll.schedule_removal()
         job_ishop.schedule_removal()
         job_fglaza.schedule_removal()
-        job_create.schedule_removal()
+        #job_create.schedule_removal()
         context.user_data['autocheck'] = 'Off'
         await query.edit_message_text(text='AutoChecking is OFF!')
     else:
