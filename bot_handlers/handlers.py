@@ -85,14 +85,14 @@ async def choose_company(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def autocheck(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    job_smoll = settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
-    job_ishop = settings.job_queue.run_daily(ishop, datetime.time(10, 0, 0, 0), chat_id=update.effective_chat.id)
-    job_fglaza = settings.job_queue.run_daily(fglaza, datetime.time(11, 0, 0, 0), chat_id=update.effective_chat.id)
+    # job_smoll = settings.job_queue.run_daily(sanmoll, datetime.time(8, 0, 0, 0), chat_id=update.effective_chat.id)
+    job_ishop = settings.job_queue.run_daily(ishop, datetime.time(12, 0, 0, 0), chat_id=update.effective_chat.id)
+    # job_fglaza = settings.job_queue.run_daily(fglaza, datetime.time(13, 0, 0, 0), chat_id=update.effective_chat.id)
     # job_create = settings.job_queue.run_daily(santehmoll_new_ads, datetime.time(16, 46, 0, 0), count_ads=context.user_data['ads_number'], chat_id=update.effective_chat.id)
     if context.user_data['autocheck'] == 'On':
-        job_smoll.schedule_removal()
+        # job_smoll.schedule_removal()
         job_ishop.schedule_removal()
-        job_fglaza.schedule_removal()
+        # job_fglaza.schedule_removal()
         #job_create.schedule_removal()
         context.user_data['autocheck'] = 'Off'
         await query.edit_message_text(text='AutoChecking is OFF!')
